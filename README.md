@@ -1,6 +1,6 @@
 # Spectaculous
 
-Spectaculous is a framework that helps you defining specifications with the help of a fluent interface. The idea behind is to put some functional interfaces introduced in Java 8 together to provide a beautiful way to define specifications in pure Java code. Its main use is for testing but you can use for any purpose that that requires writing a specification.
+Spectaculous is a framework that helps you defining specifications with the help of a fluent interface. The idea behind is to put some functional interfaces introduced in Java 8 together to provide a beautiful way to define specifications in pure Java code. Its main use is for testing but you can use for any purpose that requires writing a specification.
 
 ## How To Build
 
