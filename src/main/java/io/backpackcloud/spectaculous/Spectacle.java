@@ -78,7 +78,7 @@ public interface Spectacle<T> {
    * @param predicate the predicate to test
    * @return a component for defining the target of the test.
    */
-  <R> StatementFunctionDefinition<T, R> expect(Predicate<? super R> predicate);
+  <R> StatementOperationDefinition<T, R> expect(Predicate<? super R> predicate);
 
   /**
    * Starts a statement that defines a value that should be expected.
@@ -86,7 +86,7 @@ public interface Spectacle<T> {
    * @param supplier the supplier for the value
    * @return a component for defining the target to test.
    */
-  default <R> StatementFunctionDefinition<T, R> expect(Supplier<R> supplier) {
+  default <R> StatementOperationDefinition<T, R> expect(Supplier<R> supplier) {
     return expect(r -> Objects.equals(r, supplier.get()));
   }
 
@@ -96,7 +96,7 @@ public interface Spectacle<T> {
    * @param matcher the matcher to test
    * @return a component for defining the target to test.
    */
-  default <R> StatementFunctionDefinition<T, R> expect(Matcher<? super R> matcher) {
+  default <R> StatementOperationDefinition<T, R> expect(Matcher<? super R> matcher) {
     return expect(matcher::matches);
   }
 
@@ -106,7 +106,7 @@ public interface Spectacle<T> {
    * @param value the expected value
    * @return a component for defining the target to test.
    */
-  default <R> StatementFunctionDefinition<T, R> expect(R value) {
+  default <R> StatementOperationDefinition<T, R> expect(R value) {
     return expect(() -> value);
   }
 
@@ -114,17 +114,62 @@ public interface Spectacle<T> {
    * Defines an action statement that takes the target object.
    *
    * @param action the action to run
-   * @return this Spectacle
+   * @return a component for defining the outcome
    */
-  Spectacle<T> then(TargetedAction<? super T> action);
+  OutcomeDefinition<T> then(TargetedAction<? super T> action);
 
   /**
    * Defines an action statement that doesn't require the target object.
    *
    * @param action the action to run
-   * @return this Spectacle
+   * @return a component for defining the outcome
    */
-  Spectacle<T> then(Action action);
+  OutcomeDefinition<T> then(Action action);
+
+  /**
+   * Waits until the given action is run.
+   *
+   * @param action the action to run
+   * @return the Spectacle instance
+   */
+  Spectacle<T> waitFor(Action action);
+
+  /**
+   * Waits until the given action is run.
+   *
+   * @param action the action to run
+   * @return the Spectacle instance
+   */
+  Spectacle<T> waitFor(TargetedAction<? super T> action);
+
+  /**
+   * Interface for defining the outcome of a statement.
+   */
+  interface OutcomeDefinition<T> {
+
+    /**
+     * The statement will throw a specific exception.
+     *
+     * @param exceptionClass the type of the exception
+     * @return the Spectacle instance
+     */
+    Spectacle<T> willThrow(Class<? extends Throwable> exceptionClass);
+
+    /**
+     * The statement will throw any exception.
+     *
+     * @return the Spectacle instance
+     */
+    Spectacle<T> willFail();
+
+    /**
+     * The statement will not throw any exception.
+     *
+     * @return the Spectacle instance
+     */
+    Spectacle<T> willSucceed();
+
+  }
 
   /**
    * Interface for defining the action of a statement.
@@ -149,8 +194,17 @@ public interface Spectacle<T> {
 
   }
 
-  interface StatementFunctionDefinition<T, R> {
+  /**
+   * Interface for defining the operation of a statement
+   */
+  interface StatementOperationDefinition<T, R> {
 
+    /**
+     * Defines the operation to do with the target object
+     *
+     * @param operation the operation
+     * @return the Spectacle instance
+     */
     Spectacle<T> from(Operation<? super T, R> operation);
 
   }

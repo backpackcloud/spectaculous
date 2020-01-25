@@ -26,6 +26,14 @@ package io.backpackcloud.spectaculous;
 
 public class SpectacularException extends RuntimeException {
 
+  public SpectacularException(String message) {
+    super(message);
+  }
+
+  public SpectacularException(Throwable cause) {
+    super(cause);
+  }
+
   public SpectacularException(String message, Throwable cause) {
     super(message, cause);
   }

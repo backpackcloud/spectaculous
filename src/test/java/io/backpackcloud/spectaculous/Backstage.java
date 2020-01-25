@@ -70,7 +70,7 @@ public class Backstage {
 
   @Test
   public void testPredicateExpect() throws Throwable {
-    Spec.describe(Backstage.class)
+    Spec.describe("test")
         .given(supplier)
         .expect(predicate).from(operation);
 
@@ -84,7 +84,7 @@ public class Backstage {
     Matcher matcher = mock(Matcher.class);
     when(matcher.matches(result)).thenReturn(true);
 
-    Spec.describe(Backstage.class)
+    Spec.describe("test")
         .given(supplier)
         .expect(matcher).from(operation);
 
@@ -99,7 +99,7 @@ public class Backstage {
 
     when(expected.get()).thenReturn(result);
 
-    Spec.describe(Backstage.class)
+    Spec.describe("test")
         .given(supplier)
         .expect(expected).from(operation);
 
@@ -110,14 +110,14 @@ public class Backstage {
 
   @Test
   public void testValueExpect() throws Throwable {
-    Spec.describe(Backstage.class)
+    Spec.describe("test")
         .given(supplier)
         .expect(result).from(operation)
         .given(value)
         .expect(result).from(operation);
 
     assertThrows(SpectacularException.class, () -> {
-      Spec.describe(Backstage.class)
+      Spec.describe("test")
           .given(value)
           .expect(value).from(operation);
     });
@@ -134,31 +134,31 @@ public class Backstage {
     doThrow(new NullPointerException()).when(targetedAction).run(value);
     doThrow(new NullPointerException()).when(action).run();
 
-    Spec.describe(Backstage.class)
+    Spec.describe("test")
         .given(supplier)
         .expect(NullPointerException.class).when(action)
         .expect(NullPointerException.class).when(targetedAction);
 
     assertThrows(SpectacularException.class, () -> {
-      Spec.describe(Backstage.class)
+      Spec.describe("test")
           .given(supplier)
           .expect(IllegalAccessException.class).when(targetedAction);
     });
 
     assertThrows(SpectacularException.class, () -> {
-      Spec.describe(Backstage.class)
+      Spec.describe("test")
           .given(supplier)
           .expect(IllegalAccessException.class).when(action);
     });
 
     assertThrows(SpectacularException.class, () -> {
-      Spec.describe(Backstage.class)
+      Spec.describe("test")
           .given(supplier)
           .expect(IllegalAccessException.class).when(() -> {});
     });
 
     assertThrows(SpectacularException.class, () -> {
-      Spec.describe(Backstage.class)
+      Spec.describe("test")
           .given(value)
           .expect(IllegalAccessException.class).when(o -> {});
     });
@@ -170,33 +170,39 @@ public class Backstage {
 
   @Test
   public void testThenStatement() throws Throwable {
-    Spec.describe(Backstage.class)
+    Spec.describe("test")
         .given(value)
-        .then(action)
-        .then(targetedAction)
+        .then(action).willSucceed()
+        .then(targetedAction).willSucceed()
         .given(supplier)
-        .then(action)
-        .then(targetedAction);
+        .then(throwException()).willFail()
+        .then(throwException()).willThrow(Exception.class)
+        .then(o -> {
+          throw new Exception();
+        }).willFail()
+        .then(o -> {
+          throw new Exception();
+        }).willThrow(Exception.class);
 
     assertThrows(SpectacularException.class, () -> {
-      Spec.describe(Backstage.class)
+      Spec.describe("test")
           .given(value)
           .because("It's going to fail")
-          .then(throwException());
+          .then(throwException()).willSucceed();
     });
 
     assertThrows(SpectacularException.class, () -> {
-      Spec.describe(Backstage.class)
+      Spec.describe("test")
           .given(value)
           .because("It's going to fail")
           .then(o -> {
             throw new Exception();
-          });
+          }).willSucceed();
     });
 
-    verify(action, times(2)).run();
-    verify(targetedAction, times(2)).run(value);
-    verify(supplier).get();
+    verify(action).run();
+    verify(targetedAction).run(value);
+    verify(supplier, times(2)).get();
   }
 
   @Test
@@ -223,7 +229,7 @@ public class Backstage {
     try {
       Spec.describe("Something")
           .given(value)
-          .then(throwException());
+          .then(throwException()).willSucceed();
       throw new Exception();
     } catch (SpectacularException e) {
       assertEquals("Something", e.getMessage());
@@ -233,7 +239,7 @@ public class Backstage {
       Spec.describe("Something")
           .given(value)
           .because("is wrong")
-          .then(throwException());
+          .then(throwException()).willSucceed();
       throw new Exception();
     } catch (SpectacularException e) {
       assertEquals("Something: is wrong", e.getMessage());
@@ -243,13 +249,18 @@ public class Backstage {
       Spec.describe("Something")
           .given(value)
           .because("is wrong")
-          .then(() -> {})
+          .then(() -> {}).willSucceed()
           .because("is really wrong")
-          .then(throwException());
+          .then(throwException()).willSucceed();
       throw new Exception();
     } catch (SpectacularException e) {
       assertEquals("Something: is really wrong", e.getMessage());
     }
+  }
+
+  @Test
+  public void testWaitFir() {
+
   }
 
   private Action throwException() {
