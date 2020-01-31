@@ -24,6 +24,9 @@
 
 package io.backpackcloud.spectaculous;
 
+/**
+ * Base exception for Spectaculous
+ */
 public class SpectacularException extends RuntimeException {
 
   public SpectacularException(String message) {
