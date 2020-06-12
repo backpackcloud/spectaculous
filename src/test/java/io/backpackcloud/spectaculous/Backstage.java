@@ -259,7 +259,7 @@ public class Backstage {
   }
 
   @Test
-  public void testWaitFir() {
+  public void testWaitFor() {
 
   }
 
