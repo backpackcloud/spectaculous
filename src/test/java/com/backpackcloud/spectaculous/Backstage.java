@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package io.backpackcloud.spectaculous;
+package com.backpackcloud.spectaculous;
 
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;

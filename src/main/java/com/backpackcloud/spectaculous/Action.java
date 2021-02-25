@@ -22,23 +22,29 @@
  * SOFTWARE.
  */
 
-package io.backpackcloud.spectaculous;
+package com.backpackcloud.spectaculous;
 
 /**
- * Base exception for Spectaculous
+ * Defines an action that is part of a statement.
  */
-public class SpectacularException extends RuntimeException {
+@FunctionalInterface
+public interface Action {
 
-  public SpectacularException(String message) {
-    super(message);
-  }
+  /**
+   * Runs this action
+   *
+   * @throws Throwable if anything unexpected happens
+   */
+  void run() throws Throwable;
 
-  public SpectacularException(Throwable cause) {
-    super(cause);
-  }
-
-  public SpectacularException(String message, Throwable cause) {
-    super(message, cause);
+  /**
+   * Wraps a Runnable object into an Action.
+   *
+   * @param runnable the runnable to wrap
+   * @return a Action that calls the given runnable
+   */
+  static Action of(Runnable runnable) {
+    return runnable::run;
   }
 
 }

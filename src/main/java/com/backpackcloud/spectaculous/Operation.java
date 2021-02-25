@@ -22,29 +22,36 @@
  * SOFTWARE.
  */
 
-package io.backpackcloud.spectaculous;
+package com.backpackcloud.spectaculous;
+
+import java.util.function.Function;
 
 /**
- * Defines an action that is part of a statement.
+ * Defines an operation with the target of a Spec.
+ *
+ * @param <T> the type of the target object
+ * @param <R> the type of the result
  */
 @FunctionalInterface
-public interface Action {
+public interface Operation<T, R> {
 
   /**
-   * Runs this action
+   * Execute the operation and returns the result.
    *
+   * @param object the target object
+   * @return the result of the operation.
    * @throws Throwable if anything unexpected happens
    */
-  void run() throws Throwable;
+  R execute(T object) throws Throwable;
 
   /**
-   * Wraps a Runnable object into an Action.
+   * Wraps a Function into an Operation.
    *
-   * @param runnable the runnable to wrap
-   * @return a Action that calls the given runnable
+   * @param function the function to wrap
+   * @return an Operation that calls the given Function
    */
-  static Action of(Runnable runnable) {
-    return runnable::run;
+  static <T, R> Operation<T, R> of(Function<T, R> function) {
+    return function::apply;
   }
 
 }

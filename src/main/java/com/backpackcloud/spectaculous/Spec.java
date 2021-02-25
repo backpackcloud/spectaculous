@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package io.backpackcloud.spectaculous;
+package com.backpackcloud.spectaculous;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;

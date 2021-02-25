@@ -21,32 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.backpackcloud.spectaculous;
 
-import java.util.function.Consumer;
+package com.backpackcloud.spectaculous;
 
 /**
- * Defines an action that is part of a statement and requires the target object.
+ * Base exception for Spectaculous
  */
-@FunctionalInterface
-public interface TargetedAction<T> {
+public class SpectacularException extends RuntimeException {
 
-  /**
-   * Runs this action.
-   *
-   * @param target the target object.
-   * @throws Throwable if anything unexpected happens
-   */
-  void run(T target) throws Throwable;
+  public SpectacularException(String message) {
+    super(message);
+  }
 
-  /**
-   * Wraps the given consumer into a TargetAction
-   *
-   * @param consumer the consumer to wrap
-   * @return a TargetAction that calls the given Consumer
-   */
-  static <T> TargetedAction<T> of(Consumer<T> consumer) {
-    return consumer::accept;
+  public SpectacularException(Throwable cause) {
+    super(cause);
+  }
+
+  public SpectacularException(String message, Throwable cause) {
+    super(message, cause);
   }
 
 }

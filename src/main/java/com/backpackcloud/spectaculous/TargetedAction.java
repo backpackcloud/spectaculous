@@ -21,37 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.backpackcloud.spectaculous;
 
-package io.backpackcloud.spectaculous;
-
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
- * Defines an operation with the target of a Spec.
- *
- * @param <T> the type of the target object
- * @param <R> the type of the result
+ * Defines an action that is part of a statement and requires the target object.
  */
 @FunctionalInterface
-public interface Operation<T, R> {
+public interface TargetedAction<T> {
 
   /**
-   * Execute the operation and returns the result.
+   * Runs this action.
    *
-   * @param object the target object
-   * @return the result of the operation.
+   * @param target the target object.
    * @throws Throwable if anything unexpected happens
    */
-  R execute(T object) throws Throwable;
+  void run(T target) throws Throwable;
 
   /**
-   * Wraps a Function into an Operation.
+   * Wraps the given consumer into a TargetAction
    *
-   * @param function the function to wrap
-   * @return an Operation that calls the given Function
+   * @param consumer the consumer to wrap
+   * @return a TargetAction that calls the given Consumer
    */
-  static <T, R> Operation<T, R> of(Function<T, R> function) {
-    return function::apply;
+  static <T> TargetedAction<T> of(Consumer<T> consumer) {
+    return consumer::accept;
   }
 
 }
